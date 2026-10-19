@@ -1,0 +1,30 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import MazeLevels from '../../../app/maze/index';
+import { sanitizeMaze } from '../../../storage/mazeProgress';
+import { mazeLevels } from '../levels';
+jest.mock('@react-native-async-storage/async-storage',()=>({getItem:jest.fn(),setItem:jest.fn()}));
+const mockPush=jest.fn();
+let mockProgress=sanitizeMaze(null);
+jest.mock('expo-router',()=>({router:{push:(...args:unknown[])=>mockPush(...args),replace:jest.fn()}}));
+jest.mock('../useMazeProgress',()=>({useMazeProgress:()=>({progress:mockProgress,error:false})}));
+beforeEach(()=>{mockPush.mockClear();mockProgress=sanitizeMaze(null)});
+it('paginates routes, labels locked entries and keeps them disabled',async()=>{
+  await render(<MazeLevels />);
+  expect(screen.getByText('Highest unlocked: Route 1 of 100. Complete a route to unlock the next. Replays keep your best score.')).toBeTruthy();
+  expect(screen.getByRole('button',{name:/Maze route 1, Beginner, Unlocked/})).toBeTruthy();
+  const locked=screen.getByRole('button',{name:/Maze route 2, Beginner, Locked/});
+  fireEvent.press(locked);
+  expect(mockPush).not.toHaveBeenCalled();
+  expect(screen.queryByRole('button',{name:/Maze route 21/})).toBeNull();
+  fireEvent.press(screen.getByRole('button',{name:'Show more routes (40 of 100)'}));
+  await waitFor(()=>expect(screen.getByRole('button',{name:/Maze route 21, Easy, Locked/})).toBeTruthy());
+});
+it('shows completed and current session states from existing saves',async()=>{
+  const first=mazeLevels[0]!,second=mazeLevels[1]!;
+  mockProgress=sanitizeMaze({version:1,records:{[first.id]:{clears:1,attempts:1,bestScore:500,bestMs:20000,lastScore:500,lastMs:20000,lastRunId:'old'}},session:{runId:'resume',levelId:second.id,phase:'ready',position:second.maze.start,visited:[0],moves:0,hints:0,hintCell:null,elapsedMs:0,startedAt:null}});
+  await render(<MazeLevels />);
+  expect(screen.getByRole('button',{name:/Maze route 1, Beginner, Completed.*best score 500/})).toBeTruthy();
+  expect(screen.getByRole('button',{name:/Maze route 2, Beginner, Unlocked, current session/})).toBeTruthy();
+  fireEvent.press(screen.getByRole('button',{name:'Play next available: Route 2'}));
+  expect(mockPush).toHaveBeenCalledWith(`/maze/${second.id}`);
+});

@@ -1,0 +1,25 @@
+# Local Python tooling
+.venv/
+__pycache__/
+*.pyc
+
+# Dependency and generated build output
+node_modules/
+.expo/
+dist/
+build/
+coverage/
+*.apk
+*.aab
+*.zip
+
+# Local credentials, signing material and private configuration
+.env
+.env.*
+*.jks
+*.keystore
+*.p8
+*.p12
+*.pem
+*.key
+*.mobileprovision
