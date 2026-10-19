@@ -1,0 +1,7 @@
+# Find the Difference — original content register
+
+Three pairs are original, programmatically illustrated BuddhiBox artwork created by `mobile/tools/create_difference_art.py` using Pillow. No external image rights are needed for these pairs. Files are 900 × 600 PNGs; `a.png` and `b.png` share the same canvas. There are exactly five intentional color/ornament changes per scene: garden-001, harbor-002, market-003. The authored ellipse centers/radii in the script correspond to normalized regions in `src/features/difference/levels.ts`.
+
+The generation script compares every pixel of each A/B pair: all changed pixels must lie in exactly one region and each region must contain at least 100 changed pixels. This proves the image pairs really differ inside their mapped regions, **not** that each change is easy to see on every Android screen. Images were inspected as workspace previews, but physical-device playtesting, independent visual QA, and TalkBack usability testing have **not** occurred. These checks remain release blockers. Initial content target was five pairs; only three are included rather than inventing two more.
+
+To regenerate: use a Python environment with Pillow and run `python mobile/tools/create_difference_art.py` from the repository root. Rerun TypeScript/content tests and visually review all six images after any art edits. Never edit coordinates without updating the pixel verification script and level manifest together.

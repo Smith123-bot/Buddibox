@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "BuddhiBox",
+    "slug": "buddhibox",
+    "scheme": "buddhibox",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F1020"
+    },
+    "android": {
+      "package": "com.buddhibox.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F1020",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "versionCode": 1,
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
